@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChefFlow - Marketplace de Contratação para Gastronomia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            scroll-behavior: smooth;
+        }
+
+        /* Animações personalizadas */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .animate-fadeInUp {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .animate-slideInLeft {
+            animation: slideInLeft 0.8s ease-out forwards;
+        }
+
+        .animate-slideInRight {
+            animation: slideInRight 0.8s ease-out forwards;
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+
+        /* Cores personalizadas */
+        :root {
+            --brand-dark: #0f1419;
+            --brand-accent: #10b981;
+            --brand-light: #f8fafc;
+        }
+
+        .bg-brand-dark { background-color: var(--brand-dark); }
+        .bg-brand-accent { background-color: var(--brand-accent); }
+        .bg-brand-light { background-color: var(--brand-light); }
+        .text-brand-dark { color: var(--brand-dark); }
+        .text-brand-accent { color: var(--brand-accent); }
+
+        /* Hero Background */
+        .hero-bg {
+            background: linear-gradient(135deg, #0f1419 0%, #1a2332 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+            filter: blur(80px);
+        }
+
+        /* Accordeon */
+        .accordion-item {
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-item:hover {
+            border-color: #10b981;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.1);
+        }
+
+        .accordion-header {
+            background-color: #f8fafc;
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: var(--brand-dark);
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background-color: #f1f5f9;
+        }
+
+        .accordion-header.active {
+            background-color: var(--brand-accent);
+            color: white;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background-color: #ffffff;
+        }
+
+        .accordion-content.active {
+            max-height: 500px;
+            padding: 1.5rem;
+            border-top: 2px solid var(--brand-accent);
+        }
+
+        .accordion-icon {
+            transition: transform 0.3s ease;
+            font-size: 1.5rem;
+        }
+
+        .accordion-icon.active {
+            transform: rotate(180deg);
+        }
+
+        /* Card hover effect */
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15);
+        }
+
+        /* Step counter */
+        .step-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #0f1419 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <!-- NAVBAR -->
+    <nav class="fixed w-full bg-white shadow-md z-50 top-0">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 bg-brand-accent rounded-lg flex items-center justify-center text-white font-bold">
+                    CF
+                </div>
+                <span class="text-2xl font-bold text-brand-dark hidden sm:inline">ChefFlow</span>
+            </div>
+            <div class="flex gap-4 items-center">
+                <a href="#como-funciona" class="text-brand-dark hover:text-brand-accent transition hidden sm:inline">Como Funciona</a>
+                <a href="#seguranca" class="text-brand-dark hover:text-brand-accent transition hidden sm:inline">Segurança</a>
+                <a href="#faq" class="text-brand-dark hover:text-brand-accent transition hidden sm:inline">FAQ</a>
+                <button onclick="scrollToHero()" class="bg-brand-accent text-white px-6 py-2 rounded-lg hover:bg-green-700 transition font-semibold text-sm">
+                    Começar Agora
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 1. HERO SECTION -->
+    <section class="hero-bg min-h-screen flex items-center justify-center pt-20 relative">
+        <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+            <!-- Conteúdo Hero -->
+            <div class="animate-slideInLeft">
+                <h1 class="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+                    Contrate a Equipe <span class="gradient-text">Certa</span> em Minutos
+                </h1>
+                <p class="text-xl text-gray-300 mb-8 leading-relaxed">
+                    ChefFlow conecta estabelecimentos gastronômicos com profissionais qualificados. Sem burocracia, com segurança garantida.
+                </p>
+                
+                <!-- CTA Duplo -->
+                <div class="flex flex-col sm:flex-row gap-4 mb-12">
+                    <button onclick="redirect('contratante')" class="bg-brand-accent text-white px-8 py-4 rounded-lg hover:bg-green-700 transition font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105">
+                        👔 Quero Contratar
+                    </button>
+                    <button onclick="redirect('freelancer')" class="bg-white text-brand-dark px-8 py-4 rounded-lg hover:bg-gray-100 transition font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105">
+                        💼 Quero Trabalhar
+                    </button>
+                </div>
+
+                <p class="text-gray-400 text-sm">
+                    ✨ Sem taxas de inscrição • 🔒 Pagamento 100% seguro • ⚡ Aprovação em 24h
+                </p>
+            </div>
+
+            <!-- Imagem Hero -->
+            <div class="animate-slideInRight hidden lg:block">
+                <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&w=800&q=80" alt="Equipe de cozinha profissional" class="rounded-2xl shadow-2xl w-full h-auto object-cover">
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. PROBLEMA/DOR -->
+    <section class="py-20 bg-brand-light">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-16 animate-fadeInUp">
+                <h2 class="text-4xl lg:text-5xl font-bold text-brand-dark mb-4">
+                    Chega de Contratação na Gambiarra 🎭
+                </h2>
+                <p class="text-xl text-gray-600">Veja como era antes... e como é com ChefFlow</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Antes -->
+                <div class="bg-red-50 p-8 rounded-2xl border-2 border-red-200 animate-slideInLeft delay-100 card-hover">
+                    <h3 class="text-2xl font-bold text-red-700 mb-6">❌ Antes (O Caos)</h3>
+                    <ul class="space-y-4 text-gray-700">
+                        <li class="flex gap-3">
+                            <span class="text-red-500 font-bold">•</span>
+                            <span>Ligações de última hora no meio do serviço</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="text-red-500 font-bold">•</span>
+                            <span>Sem como verificar a qualidade dos profissionais</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="text-red-500 font-bold">•</span>
+                            <span>Desistências e faltas no último minuto</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="text-red-500 font-bold">•</span>
+                            <span>Débil gestão de pagamentos (transferências, dinheiro vivo)</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="text-red-500 font-bold">•</span>
+                            <span>Sem histórico ou rastreabilidade</span>
+                        </li>
+                    </ul>
+                    <div class="mt-8 text-center">
+                        <p class="text-4xl font-bold text-red-600">😤</p>
+                    </div>
+                </div>
+
+                <!-- Depois -->
+                <div class="bg-green-50 p-8 rounded-2xl border-2 border-brand-accent animate-slideInRight delay-100 card-hover">
+                    <h3 class="text-2xl font-bold text-brand-accent mb-6">✅ Depois (ChefFlow)</h3>
+                    <ul class="space-y-4 text-gray-700">
+                        <li class="flex gap-3">
+                            <span class="text-brand-accent font-bold">•</span>
+                            <span>Contratação antecipada com confirmação 100%</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="text-brand-accent font-bold">•</span>
+                            <span>Perfis verificados com avaliações reais</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="text-brand-accent font-bold">•</span>
+                            <span>Fila inteligente de profissionais confirmados</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="text-brand-accent font-bold">•</span>
+                            <span>Pagamento seguro e rastreável na plataforma</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="text-brand-accent font-bold">•</span>
+                            <span>Histórico completo de cada profissional</span>
+                        </li>
+                    </ul>
+                    <div class="mt-8 text-center">
+                        <p class="text-4xl font-bold text-brand-accent">😎</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. COMO FUNCIONA -->
+    <section id="como-funciona" class="py-20 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-16 animate-fadeInUp">
+                <h2 class="text-4xl lg:text-5xl font-bold text-brand-dark mb-4">
+                    Como Funciona? 🚀
+                </h2>
+                <p class="text-xl text-gray-600">Apenas 3 passos simples</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <!-- Passo 1 -->
+                <div class="text-center animate-fadeInUp delay-100 card-hover">
+                    <div class="flex justify-center mb-6">
+                        <div class="step-circle">1</div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-brand-dark mb-4">Cadastro Rápido</h3>
+                    <p class="text-gray-600 mb-6">
+                        Crie sua conta em menos de 2 minutos. Contratantes definem suas necessidades, freelancers compartilham suas skills.
+                    </p>
+                    <img src="https://images.unsplash.com/photo-1516534775068-bb8a9b14ccff?ixlib=rb-4.0.3&w=400&q=80" alt="Cadastro" class="rounded-lg w-full h-48 object-cover">
+                </div>
+
+                <!-- Passo 2 -->
+                <div class="text-center animate-fadeInUp delay-200 card-hover">
+                    <div class="flex justify-center mb-6">
+                        <div class="step-circle">2</div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-brand-dark mb-4">Seleção Inteligente</h3>
+                    <p class="text-gray-600 mb-6">
+                        ChefFlow sugere os melhores profissionais com base em experiência, avaliações e disponibilidade.
+                    </p>
+                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&w=400&q=80" alt="Seleção" class="rounded-lg w-full h-48 object-cover">
+                </div>
+
+                <!-- Passo 3 -->
+                <div class="text-center animate-fadeInUp delay-300 card-hover">
+                    <div class="flex justify-center mb-6">
+                        <div class="step-circle">3</div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-brand-dark mb-4">Trabalho Realizado</h3>
+                    <p class="text-gray-600 mb-6">
+                        Após conclusão, profissional recebe o pagamento e ambos deixam avaliações. Simples!
+                    </p>
+                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&w=400&q=80" alt="Conclusão" class="rounded-lg w-full h-48 object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. SEGURANÇA E CONFIANÇA -->
+    <section id="seguranca" class="py-20 bg-gradient-to-r from-brand-dark to-blue-900 relative overflow-hidden">
+        <!-- Background decoration -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-20 right-20 w-96 h-96 bg-brand-accent rounded-full filter blur-3xl"></div>
+        </div>
+
+        <div class="max-w-6xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-16 animate-fadeInUp">
+                <h2 class="text-4xl lg:text-5xl font-bold text-white mb-4">
+                    🔒 Segurança & Confiança
+                </h2>
+                <p class="text-xl text-gray-300">Sua tranquilidade é nossa prioridade</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Verificação -->
+                <div class="bg-white bg-opacity-10 backdrop-blur-lg border border-white border-opacity-20 rounded-2xl p-8 animate-fadeInUp delay-100 card-hover">
+                    <div class="text-4xl mb-4">✅</div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Verificação Completa</h3>
+                    <p class="text-gray-300">
+                        Todos os profissionais passam por verificação de documentos, antecedentes e validação de contatos.
+                    </p>
+                </div>
+
+                <!-- Fila de Espera -->
+                <div class="bg-white bg-opacity-10 backdrop-blur-lg border border-white border-opacity-20 rounded-2xl p-8 animate-fadeInUp delay-200 card-hover">
+                    <div class="text-4xl mb-4">📋</div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Fila Inteligente</h3>
+                    <p class="text-gray-300">
+                        Sistema de fila de espera automático garante que profissionais confirmados estejam sempre disponíveis.
+                    </p>
+                </div>
+
+                <!-- Pagamento Garantido -->
+                <div class="bg-white bg-opacity-10 backdrop-blur-lg border border-white border-opacity-20 rounded-2xl p-8 animate-fadeInUp delay-300 card-hover">
+                    <div class="text-4xl mb-4">💰</div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Pagamento Garantido</h3>
+                    <p class="text-gray-300">
+                        Plataforma segura com depósito em garantia. Profissional recebe após conclusão do trabalho verificado.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+                <div class="animate-fadeInUp delay-100">
+                    <p class="text-5xl font-bold text-brand-accent mb-2">2500+</p>
+                    <p class="text-gray-300">Profissionais Verificados</p>
+                </div>
+                <div class="animate-fadeInUp delay-200">
+                    <p class="text-5xl font-bold text-brand-accent mb-2">500+</p>
+                    <p class="text-gray-300">Estabelecimentos</p>
+                </div>
+                <div class="animate-fadeInUp delay-300">
+                    <p class="text-5xl font-bold text-brand-accent mb-2">4.9⭐</p>
+                    <p class="text-gray-300">Avaliação Média</p>
+                </div>
+                <div class="animate-fadeInUp delay-400">
+                    <p class="text-5xl font-bold text-brand-accent mb-2">+10k</p>
+                    <p class="text-gray-300">Trabalhos Realizados</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. SOCIAL PROOF (DEPOIMENTOS) -->
+    <section class="py-20 bg-brand-light">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-16 animate-fadeInUp">
+                <h2 class="text-4xl lg:text-5xl font-bold text-brand-dark mb-4">
+                    O Que Dizem Sobre Nós 💬
+                </h2>
+                <p class="text-xl text-gray-600">Histórias reais de sucesso</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Depoimento 1 - Contratante -->
+                <div class="bg-white rounded-2xl p-8 shadow-lg animate-fadeInUp delay-100 card-hover border-l-4 border-brand-accent">
+                    <div class="flex gap-4 mb-4">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&w=100&q=80" alt="Gerente de restaurante" class="w-14 h-14 rounded-full object-cover">
+                        <div>
+                            <p class="font-bold text-brand-dark">Carlos Silva</p>
+                            <p class="text-sm text-gray-500">Gerente, Restaurante Bella</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">
+                        "ChefFlow salvou nosso evento do último minuto! Consegui 4 profissionais verificados em 30 minutos. Nunca mais contrato de outro jeito!"
+                    </p>
+                    <p class="text-brand-accent font-semibold">⭐⭐⭐⭐⭐</p>
+                </div>
+
+                <!-- Depoimento 2 - Freelancer -->
+                <div class="bg-white rounded-2xl p-8 shadow-lg animate-fadeInUp delay-200 card-hover border-l-4 border-brand-accent">
+                    <div class="flex gap-4 mb-4">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&w=100&q=80" alt="Chef Freelancer" class="w-14 h-14 rounded-full object-cover">
+                        <div>
+                            <p class="font-bold text-brand-dark">Marina Costa</p>
+                            <p class="text-sm text-gray-500">Chef de Cozinha</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">
+                        "Finalmente um app que respeita meu tempo! Consigo escolher os trabalhos que quero e o pagamento sempre cai na hora. Recomendo!"
+                    </p>
+                    <p class="text-brand-accent font-semibold">⭐⭐⭐⭐⭐</p>
+                </div>
+
+                <!-- Depoimento 3 - Contratante -->
+                <div class="bg-white rounded-2xl p-8 shadow-lg animate-fadeInUp delay-300 card-hover border-l-4 border-brand-accent">
+                    <div class="flex gap-4 mb-4">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&w=100&q=80" alt="Proprietária de café" class="w-14 h-14 rounded-full object-cover">
+                        <div>
+                            <p class="font-bold text-brand-dark">Juliana Pereira</p>
+                            <p class="text-sm text-gray-500">Proprietária, Café Artístico</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">
+                        "A fila de espera inteligente é um game-changer. Nunca mais meu café fica sem staff. Qualidade consistente, sempre!"
+                    </p>
+                    <p class="text-brand-accent font-semibold">⭐⭐⭐⭐⭐</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. FAQ -->
+    <section id="faq" class="py-20 bg-white">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="text-center mb-16 animate-fadeInUp">
+                <h2 class="text-4xl lg:text-5xl font-bold text-brand-dark mb-4">
+                    Perguntas Frequentes ❓
+                </h2>
+                <p class="text-xl text-gray-600">Tire suas dúvidas</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- FAQ 1 -->
+                <div class="accordion-item animate-fadeInUp delay-100">
+                    <div class="accordion-header" onclick="toggleAccordion(0)">
+                        <span>Como funciona a verificação de profissionais?</span>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p class="text-gray-700">
+                            Todo profissional que se cadastra passa por um processo de verificação que inclui: validação de documentos (RG, CPF), verificação de referências, análise de histórico de trabalhos e validação de contatos. Este processo leva de 24 a 48 horas.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="accordion-item animate-fadeInUp delay-200">
+                    <div class="accordion-header" onclick="toggleAccordion(1)">
+                        <span>Qual é a taxa da plataforma?</span>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p class="text-gray-700">
+                            Para contratantes: 5% do valor do trabalho. Para profissionais: 10% é retido na plataforma como garantia de qualidade. Não há taxas de inscrição ou de cancelamento.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="accordion-item animate-fadeInUp delay-300">
+                    <div class="accordion-header" onclick="toggleAccordion(2)">
+                        <span>Como é garantido o pagamento?</span>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p class="text-gray-700">
+                            O contratante envia o valor para a plataforma ANTES do trabalho começar. Após confirmação de conclusão do serviço, o profissional recebe o pagamento em até 24 horas. Se houver disputa, nosso time de suporte intervém.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="accordion-item animate-fadeInUp delay-400">
+                    <div class="accordion-header" onclick="toggleAccordion(3)">
+                        <span>E se o profissional não aparecer?</span>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p class="text-gray-700">
+                            Profissionais que cancelam em cima da hora recebem penalidades: 3 desistências = bloqueio temporário de 7 dias. Contratantes recebem reembolso 100% e podem selecionar outro profissional da fila de espera.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="accordion-item animate-fadeInUp delay-400">
+                    <div class="accordion-header" onclick="toggleAccordio(4)">
+                        <span>Posso usar ChefFlow fora do estado/país?</span>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p class="text-gray-700">
+                            Atualmente, ChefFlow funciona em todos os estados do Brasil. Expandimos para o exterior em breve. Entre em contato conosco para conhecer nossas planos internacionais.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. CTA FINAL + FOOTER -->
+    <section class="py-20 bg-gradient-to-r from-brand-dark to-blue-900 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-brand-accent rounded-full filter blur-3xl"></div>
+        </div>
+
+        <div class="max-w-4xl mx-auto px-4 text-center relative z-10 animate-fadeInUp">
+            <h2 class="text-4xl lg:text-5xl font-bold text-white mb-6">
+                Pronto Para Transformar Sua Contratação? 🚀
+            </h2>
+            <p class="text-xl text-gray-300 mb-8">
+                Junte-se a centenas de empresas que já confiam em ChefFlow
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                <button onclick="redirect('contratante')" class="bg-brand-accent text-white px-10 py-4 rounded-lg hover:bg-green-700 transition font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105">
+                    Cadastro para Contratantes
+                </button>
+                <button onclick="redirect('freelancer')" class="bg-white text-brand-dark px-10 py-4 rounded-lg hover:bg-gray-100 transition font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105">
+                    Cadastro para Profissionais
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-brand-dark text-gray-400 py-12">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <!-- Logo -->
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-10 h-10 bg-brand-accent rounded-lg flex items-center justify-center text-white font-bold">
+                            CF
+                        </div>
+                        <span class="text-white font-bold">ChefFlow</span>
+                    </div>
+                    <p class="text-sm">
+                        Conectando talentos gastronômicos com oportunidades.
+                    </p>
+                </div>
+
+                <!-- Links Rápidos -->
+                <div>
+                    <h4 class="text-white font-bold mb-4">Sobre</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-brand-accent transition">Quem Somos</a></li>
+                        <li><a href="#" class="hover:text-brand-accent transition">Blog</a></li>
+                        <li><a href="#" class="hover:text-brand-accent transition">Carreiras</a></li>
+                    </ul>
+                </div>
+
+                <!-- Suporte -->
+                <div>
+                    <h4 class="text-white font-bold mb-4">Suporte</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-brand-accent transition">Help Center</a></li>
+                        <li><a href="#" class="hover:text-brand-accent transition">Contato</a></li>
+                        <li><a href="#" class="hover:text-brand-accent transition">Status</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal -->
+                <div>
+                    <h4 class="text-white font-bold mb-4">Legal</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-brand-accent transition">Termos de Uso</a></li>
+                        <li><a href="#" class="hover:text-brand-accent transition">Privacidade</a></li>
+                        <li><a href="#" class="hover:text-brand-accent transition">Cookies</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 pt-8 text-center text-sm">
+                <p>&copy; 2024 ChefFlow. Todos os direitos reservados. 🍽️</p>
+                <div class="flex justify-center gap-6 mt-4">
+                    <a href="#" class="hover:text-brand-accent transition">Twitter</a>
+                    <a href="#" class="hover:text-brand-accent transition">LinkedIn</a>
+                    <a href="#" class="hover:text-brand-accent transition">Instagram</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script>
+        // Funções de navegação
+        function redirect(type) {
+            if (type === 'contratante') {
+                window.location.href = '/index.html';
+            } else if (type === 'freelancer') {
+                window.location.href = '/index.html';
+            }
+        }
+
+        function scrollToHero() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Accordion toggle
+        function toggleAccordion(index) {
+            const headers = document.querySelectorAll('.accordion-header');
+            const contents = document.querySelectorAll('.accordion-content');
+            const icons = document.querySelectorAll('.accordion-icon');
+
+            // Close all
+            headers.forEach((h, i) => {
+                if (i !== index) {
+                    h.classList.remove('active');
+                    contents[i].classList.remove('active');
+                    icons[i].classList.remove('active');
+                }
+            });
+
+            // Toggle current
+            headers[index].classList.toggle('active');
+            contents[index].classList.toggle('active');
+            icons[index].classList.toggle('active');
+        }
+
+        // Observador para animar elementos ao scrollar
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observar todos os elementos com animações
+        document.querySelectorAll('[class*="animate-"]').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+            observer.observe(el);
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow-lg');
+            } else {
+                navbar.classList.remove('shadow-lg');
+            }
+        });
+    </script>
+</body>
+</html>

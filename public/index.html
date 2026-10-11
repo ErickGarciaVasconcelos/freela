@@ -1,0 +1,1433 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreelaSeguro - Painel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="header-right">
+            <button onclick="carregarNotificacoesSobDemanda()" 
+                    style="background:none; border:none; font-size:1.5rem; cursor:pointer; padding:10px;">
+                🔔
+            </button>
+            <div id="status-sessao"><button class="btn-auth" onclick="abrirModal()">Entrar / Criar Conta 🔐</button></div>
+            </div>
+
+        <h1>🍽️ FreelaSeguro</h1>
+        <p>Marketplace Inteligente • Seleção e Fila de Espera</p>
+    </header>
+
+    <div id="modal-auth" class="modal">
+        <div class="modal-content" style="max-width: 550px;">
+            <span class="fechar-modal" onclick="fecharModal()">&times;</span>
+            <div class="modal-tabs">
+                <button id="tab-login" class="tab-btn active" onclick="alternarAbas('login')">Acessar</button>
+                <button id="tab-cadastro" class="tab-btn" onclick="alternarAbas('cadastro')">Criar Conta</button>
+            </div>
+
+            <div id="box-login" class="auth-box">
+                <h2>Acessar Painel</h2>
+                <form id="form-login">
+                    <div class="campo"> <label>E-mail:</label> <input type="email" id="log-email" required> </div>
+                    <div class="campo"> <label>Senha:</label> <input type="password" id="log-senha" required> </div>
+                    <button type="submit" class="btn-enviar" style="background-color: #2563eb;">Entrar →</button>
+                </form>
+            </div>
+
+            <div id="box-cadastro" class="auth-box hidden">
+                <h2>Formulário de Cadastro</h2>
+                <form id="form-cadastro">
+                    <div class="campo hidden" id="campo-foto">
+                        <label>Foto de Perfil (Para visualização do contratante):</label>
+                        <input type="file" id="cad-foto" accept="image/*" style="border: none; background: transparent; padding: 0;">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="campo"> <label>Nome de Registro:</label> <input type="text" id="cad-nome" required> </div>
+                        <div class="campo"> <label>Nome Social:</label> <input type="text" id="cad-nome-social"> </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="campo"> <label>CPF:</label> <input type="text" id="cad-cpf" required> </div>
+                        <div class="campo"> <label>WhatsApp:</label> <input type="text" id="cad-celular" required> </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;" id="linha-dados-freela">
+                        <div class="campo">
+                            <label>Identificação:</label>
+                            <select id="cad-genero" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid #e2e8f0;">
+                                <option value="Masculino">Masculino</option> <option value="Feminino">Feminino</option> <option value="Outro">Outro</option>
+                            </select>
+                        </div>
+                        <div class="campo"> <label>Sua Idade:</label> <input type="number" id="cad-idade" min="18"> </div>
+                    </div>
+
+                    <div class="campo"> <label>E-mail:</label> <input type="email" id="cad-email" required> </div>
+                    <div class="campo"> <label>Senha:</label> <input type="password" id="cad-senha" required> </div>
+                    
+                    <div class="campo">
+                        <label>Eu quero:</label>
+                        <div style="display: flex; gap: 20px;">
+                            <label><input type="radio" name="cad-tipo" value="contratado" checked onclick="toggleFreela(true)"> Ser Freela</label>
+                            <label><input type="radio" name="cad-tipo" value="contratante" onclick="toggleFreela(false)"> Contratar</label>
+                        </div>
+                    </div>
+                    <div class="campo" id="campo-cad-experiencias" style="display:none;"> 
+                        <label>💼 Minhas Experiências Profissionais:</label>
+                        <div id="container-experiencias" style="background:#f1f5f9; padding:10px; border-radius:6px; max-height:300px; overflow-y:auto; margin-bottom:10px;"></div>
+                        <button type="button" onclick="adicionarExperiencia()" class="btn-enviar" style="background:#2563eb; width:100%; margin-top:10px;">+ Adicionar Experiência</button>
+                    </div>
+                    <button type="submit" class="btn-enviar" style="background-color: #10b981;">Registrar Conta Segura →</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Avaliação do Local -->
+    <div id="modal-avaliar" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="fechar-modal" onclick="fecharModalAvaliar()">&times;</span>
+            <h2>Avaliar Local de Trabalho</h2>
+            <form id="form-avaliar">
+                <div class="campo">
+                    <label>Nota (1-5 ⭐):</label>
+                    <select id="avaliar-nota" required style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid #e2e8f0;">
+                        <option value="">Selecione uma nota...</option>
+                        <option value="1">⭐ 1 - Muito Ruim</option>
+                        <option value="2">⭐⭐ 2 - Ruim</option>
+                        <option value="3">⭐⭐⭐ 3 - Regular</option>
+                        <option value="4">⭐⭐⭐⭐ 4 - Bom</option>
+                        <option value="5">⭐⭐⭐⭐⭐ 5 - Excelente</option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label>Comentário (opcional):</label>
+                    <textarea id="avaliar-comentario" placeholder="Descreva sua experiência..." style="width:100%; height:100px; padding:0.6rem; border-radius:6px; border:1px solid #e2e8f0;"></textarea>
+                </div>
+                <button type="submit" class="btn-enviar" style="background-color: #f59e0b; width:100%;">Enviar Avaliação →</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Cancelamento de Vaga -->
+    <div id="modal-cancelar-vaga" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="fechar-modal" onclick="fecharModalCancelar()">&times;</span>
+            <h2>⚠️ Cancelar Vaga</h2>
+            <p style="color:#64748b; margin-bottom:15px;">Tem certeza que deseja cancelar esta vaga? Esta ação notificará todos os profissionais escalados.</p>
+            <form id="form-cancelar-vaga">
+                <div class="campo">
+                    <label>Motivo do Cancelamento (opcional):</label>
+                    <textarea id="motivo-cancelamento" placeholder="Ex: Cliente cancelou pedido, falta de orçamento, etc." style="width:100%; height:100px; padding:0.6rem; border-radius:6px; border:1px solid #e2e8f0;"></textarea>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:15px;">
+                    <button type="button" onclick="fecharModalCancelar()" class="btn-enviar" style="background-color:#94a3b8; flex:1;">Manter Vaga</button>
+                    <button type="submit" class="btn-enviar" style="background-color:#dc2626; flex:1;">Confirmar Cancelamento →</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Visualização de Candidatos -->
+    <div id="modal-ver-candidatos" class="modal">
+        <div class="modal-content" style="max-width: 1000px; max-height: 90vh; overflow-y: auto;">
+            <span class="fechar-modal" onclick="fecharModalCandidatos()">&times;</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+                <div>
+                    <h2 id="titulo-vaga-candidatos" style="margin:0;">Candidatos da Vaga</h2>
+                    <p id="info-vaga-candidatos" style="color:#64748b; margin:5px 0 0 0;"></p>
+                </div>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <span id="contador-selecao-equipe" style="color:#2563eb; font-weight:bold; font-size:0.9rem;">Titulares: 0 | Reservas: 0</span>
+                    <button type="button" onclick="confirmarSelecaoEquipe(window.vagaEmSelecao)" class="btn-enviar" style="background-color:#2563eb; padding:8px 15px;">Confirmar Equipe →</button>
+                    <button type="button" onclick="fecharModalCandidatos()" class="btn-enviar" style="background-color:#94a3b8; padding:8px 15px;">Fechar</button>
+                </div>
+            </div>
+            
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:15px;" id="container-candidatos-detalhes"></div>
+        </div>
+    </div>
+
+    <main class="container">
+        <section id="secao-postar-vaga" class="formulario-secao hidden">
+            <div style="background:white; border-radius:12px; padding:30px; box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+                <div style="margin-bottom:25px;">
+                    <h2 style="margin:0 0 8px 0; color:#1f2937;">💼 Postar Nova Vaga</h2>
+                    <p style="color:#64748b; margin:0;">Preencha os detalhes da sua vaga para encontrar os melhores profissionais</p>
+                </div>
+                
+                <form id="form-vaga">
+                    <!-- INFORMAÇÕES BÁSICAS -->
+                    <div style="margin-bottom:25px;">
+                        <h3 style="color:#1f2937; font-size:1.1rem; margin-bottom:15px; padding-bottom:10px; border-bottom:2px solid #e2e8f0;">📋 Informações Básicas</h3>
+                        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px;">
+                            <div class="campo"> 
+                                <label style="font-weight:600;">Título da Vaga:</label> 
+                                <input type="text" id="titulo" placeholder="Ex: Chef de Cozinha" required style="padding:12px; border:1px solid #e2e8f0; border-radius:8px; font-size:1rem;"> 
+                            </div>
+                            <div class="campo"> 
+                                <label style="font-weight:600;">Vagas Totais:</label> 
+                                <input type="number" id="vagasTotais" value="1" min="1" required style="padding:12px; border:1px solid #e2e8f0; border-radius:8px; font-size:1rem;"> 
+                            </div>
+                            <div class="campo"> 
+                                <label style="font-weight:600;">Cachê (R$):</label> 
+                                <input type="number" id="valor" placeholder="250" required style="padding:12px; border:1px solid #e2e8f0; border-radius:8px; font-size:1rem;"> 
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- DATA E HORÁRIOS -->
+                    <div style="margin-bottom:25px;">
+                        <h3 style="color:#1f2937; font-size:1.1rem; margin-bottom:15px; padding-bottom:10px; border-bottom:2px solid #e2e8f0;">📅 Data e Horários</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                            <div class="campo"> 
+                                <label style="font-weight:600;">Data do Trabalho:</label> 
+                                <input type="date" id="dataTrabalho" required style="padding:12px; border:1px solid #e2e8f0; border-radius:8px; font-size:1rem;"> 
+                            </div>
+                            <div class="campo"> 
+                                <label style="font-weight:600;">Horário Início:</label> 
+                                <input type="time" id="horarioInicio" required style="padding:12px; border:1px solid #e2e8f0; border-radius:8px; font-size:1rem;"> 
+                            </div>
+                            <div class="campo"> 
+                                <label style="font-weight:600;">Horário Fim:</label> 
+                                <input type="time" id="horarioFim" required style="padding:12px; border:1px solid #e2e8f0; border-radius:8px; font-size:1rem;"> 
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- LOCALIZAÇÃO -->
+                    <div style="margin-bottom:25px;">
+                        <h3 style="color:#1f2937; font-size:1.1rem; margin-bottom:15px; padding-bottom:10px; border-bottom:2px solid #e2e8f0;">📍 LOCALIZAÇÃO</h3>
+                        <div class="campo"> 
+                            <label style="font-weight:600;">Endereço:</label> 
+                            <input type="text" id="endereco" placeholder="Ex: Rua das Flores, 123, São Paulo" required style="padding:12px; border:1px solid #e2e8f0; border-radius:8px; font-size:1rem; width:100%;"> 
+                        </div>
+                    </div>
+                    
+                    <!-- MÚLTIPLOS DIAS -->
+                    <div style="margin-bottom:25px; background:#e0f2fe; padding:16px; border-radius:8px; border-left:4px solid #0284c7;">
+                        <label style="display:flex; align-items:center; gap:10px; cursor:pointer; margin:0; font-weight:600;">
+                            <input type="checkbox" id="multiplosDias" onchange="toggleMultiplosDias()" style="width:20px; height:20px; cursor:pointer;">
+                            <span>📅 Esta vaga vai acontecer em múltiplos dias?</span>
+                        </label>
+                        <p style="color:#0284c7; margin:8px 0 0 30px; font-size:0.9rem;">Você pode adicionar sábado e domingo, por exemplo</p>
+                    </div>
+                    
+                    <div id="container-multiplos-dias" style="display:none; background:#f1f5f9; padding:20px; border-radius:8px; margin-bottom:25px; border:2px dashed #2563eb;">
+                        <h4 style="color:#2563eb; margin-bottom:15px;">➕ Adicionar Mais Dias</h4>
+                        <div id="lista-dias-adicionais" style="max-height:300px; overflow-y:auto; margin-bottom:15px;"></div>
+                        <button type="button" onclick="adicionarDiaVaga()" style="
+                            background:linear-gradient(135deg, #10b981 0%, #059669 100%);
+                            color:white;
+                            border:none;
+                            padding:12px 24px;
+                            border-radius:8px;
+                            font-weight:bold;
+                            cursor:pointer;
+                            width:100%;
+                            transition:all 0.3s ease;
+                            box-shadow:0 2px 8px rgba(16, 185, 129, 0.3);
+                        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(16, 185, 129, 0.4)';"
+                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(16, 185, 129, 0.3)';">
+                            + Adicionar Outro Dia
+                        </button>
+                    </div>
+                    
+                    <!-- BOTÃO DE ENVIO -->
+                    <div style="display:flex; gap:10px; justify-content:center; margin-top:30px;">
+                        <button type="submit" style="
+                            background:linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+                            color:white;
+                            border:none;
+                            padding:14px 40px;
+                            border-radius:8px;
+                            font-weight:bold;
+                            cursor:pointer;
+                            font-size:1.05rem;
+                            transition:all 0.3s ease;
+                            box-shadow:0 4px 12px rgba(15, 23, 42, 0.3);
+                        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(15, 23, 42, 0.4)';"
+                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(15, 23, 42, 0.3)';">
+                            🚀 Lançar Vaga
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Container de Abas para Contratado -->
+        <div id="container-tabs" class="painel-tabs hidden" style="margin-bottom: 2rem; justify-content: center;">
+            <button id="tab-jobs" class="tab-opcao ativa" onclick="mudarVisao('jobs')">Meus Jobs 📋</button>
+            <button id="tab-mural" class="tab-opcao" onclick="mudarVisao('mural')">Mural de Vagas 🌐</button>
+        </div>
+
+        <section id="secao-meus-jobs" class="formulario-secao hidden" style="background: #f8fafc; border: 2px dashed #cbd5e1; margin-bottom: 2.5rem;">
+            <h2>Meus Trabalhos (Jobs) 💼</h2>
+            <div id="lista-meus-jobs" style="display: flex; flex-direction: column; gap: 10px;"></div>
+        </section>
+
+        <section id="secao-minhas-vagas" class="formulario-secao hidden" style="background: linear-gradient(135deg, #fef2f2 0%, #fde8e8 100%); border: none; margin-bottom: 3rem; padding: 30px;">
+            <div style="display:flex; align-items:center; gap:15px; margin-bottom:25px;">
+                <span style="font-size:2rem;">📋</span>
+                <div>
+                    <h2 style="margin:0; color:#1f2937;">Minhas Vagas Postadas</h2>
+                    <p style="color:#64748b; margin:5px 0 0 0; font-size:0.9rem;">Gerencie e acompanhe suas vagas em tempo real</p>
+                </div>
+            </div>
+            <div id="lista-minhas-vagas" style="display: flex; flex-direction: column; gap: 20px;"></div>
+        </section>
+
+        <section id="secao-mural" class="hidden">
+            <h2>Mural de Oportunidades</h2>
+            <div id="lista-vagas" class="grid-vagas"></div>
+            <nav id="paginacao-vagas" style="display:flex; gap:8px; justify-content:center; align-items:center; margin-top:20px; flex-wrap:wrap;" aria-label="Paginação de vagas"></nav>
+        </section>
+    </main>
+
+    <script src="/seguranca.js"></script>
+    <script>
+        // 🛡️ PROTEÇÃO CSRF (Double Submit Cookie)
+        // O servidor exige o header X-CSRF-Token em toda requisição que altera estado.
+        // Este wrapper centralizado injeta o token lido do cookie em todas as chamadas fetch.
+        (function () {
+            function lerCookieCsrf(nome) {
+                return document.cookie.split(';')
+                    .map(p => p.trim())
+                    .find(p => p.startsWith(nome + '='))
+                    ?.split('=').slice(1).join('=');
+            }
+
+            const METODOS_SEGUROS = ['GET', 'HEAD', 'OPTIONS'];
+
+            const fetchOriginal = window.fetch.bind(window);
+
+            window.fetch = function (url, opcoes) {
+                opcoes = opcoes || {};
+                const metodo = (opcoes.method || 'GET').toUpperCase();
+
+                if (METODOS_SEGUROS.includes(metodo)) return fetchOriginal(url, opcoes);
+
+                const token = lerCookieCsrf('csrfToken');
+                if (token) {
+                    opcoes.headers = Object.assign({}, opcoes.headers, { 'X-CSRF-Token': token });
+                    opcoes.credentials = opcoes.credentials || 'same-origin';
+                }
+
+                return fetchOriginal(url, opcoes);
+            };
+        })();
+
+        // 🛡️ Helpers de sanitização (item 28).
+        // TODA interpolação de dado dinâmico neste arquivo passa por estes helpers:
+        // nunca interpole valor de usuário/API direto em innerHTML ou em onclick.
+        const { escHtml: esc, escAttr, urlSegura, idValido, indiceSeguro, numeroSeguro, api, lerJson } = window.Seguranca;
+
+        // Evita URL com javascript:/data:text/html em <a href> e <img src>.
+        const IMAGEM_PADRAO = 'https://via.placeholder.com/100';
+
+        function linkMaps(endereco) {
+            const url = urlSegura(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(endereco || '')}`);
+            if (!url) return '';
+            return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color:#2563eb; text-decoration:none; font-size:0.85rem;">🗺️ Como Chegar</a>`;
+        }
+
+        // Leitor de imagem Base64
+        let base64Image = "";
+
+        // Armazenar vagas temporariamente para o modal de candidatos.
+        // Declarado antes de qualquer uso para evitar ReferenceError (TDZ).
+        let carregarVagasTemp = [];
+        document.getElementById('cad-foto').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => { base64Image = reader.result; };
+            if(file) reader.readAsDataURL(file);
+        });
+
+        function toggleFreela(isFreela) {
+            document.getElementById('campo-cad-experiencias').style.display = isFreela ? 'block' : 'none';
+            document.getElementById('linha-dados-freela').style.display = isFreela ? 'grid' : 'none';
+            document.getElementById('campo-foto').style.display = isFreela ? 'block' : 'none';
+        }
+
+        // 📋 Gerenciar experiências do freelancer
+        let experienciasCadastro = [];
+
+        // ========================================
+        // 🎯 DELEGAÇÃO DE EVENTOS (Event Delegation)
+        // Nenhum handler recebe valor vindo do servidor por interpolação em
+        // `onclick="..."` — tudo viaja em data-* e é lido por `dataset`.
+        // ========================================
+        document.addEventListener('click', async function (e) {
+            const alvo = e.target.closest('[data-acao]');
+            if (!alvo) return;
+
+            const acao = alvo.dataset.acao;
+            // IDs vindos do DOM são revalidados antes de virar URL de API.
+            const id = idValido(alvo.dataset.id);
+            if (id) e.preventDefault();
+
+            switch (acao) {
+                case 'candidatar': {
+                    if (!id) return;
+                    if (!window.Seguranca.usuarioLogado()) {
+                        alert("⚠️ Você precisa estar autenticado para se candidatar!");
+                        abrirModal();
+                        return;
+                    }
+                    try {
+                        const res = await api(`/vaga/${id}/candidatar`, { method: 'PATCH' });
+                        const dados = await lerJson(res);
+                        alert(res.ok ? `✅ ${dados.mensagem || 'Currículo enviado!'}` : `❌ ${dados.erro || 'Erro ao enviar currículo'}`);
+                        if (res.ok) carregarVagas();
+                    } catch {
+                        alert("❌ Falha de conexão ao tentar se candidatar.");
+                    }
+                    break;
+                }
+
+                case 'confirmar-presenca': {
+                    if (!id) return;
+                    if (!window.Seguranca.usuarioLogado()) { abrirModal(); return; }
+                    try {
+                        const res = await api(`/vaga/${id}/confirmar`, { method: 'PATCH' });
+                        const dados = await lerJson(res);
+                        alert(res.ok ? `✅ ${dados.mensagem || 'Presença confirmada!'}` : `❌ ${dados.erro || 'Erro ao confirmar presença'}`);
+                        if (res.ok) carregarVagas();
+                    } catch {
+                        alert("❌ Falha de conexão ao confirmar presença.");
+                    }
+                    break;
+                }
+
+                case 'desistir': {
+                    if (!id) return;
+                    if (!confirm("⚠️ Tem certeza que deseja cancelar sua presença? Isso cederá sua vaga ao próximo.")) return;
+                    if (!window.Seguranca.usuarioLogado()) { abrirModal(); return; }
+                    try {
+                        const res = await api(`/vaga/${id}/cancelar`, { method: 'PATCH' });
+                        const dados = await lerJson(res);
+                        alert(res.ok ? `✅ ${dados.mensagem || 'Inscrição cancelada!'}` : `❌ ${dados.erro || 'Erro ao cancelar'}`);
+                        if (res.ok) carregarVagas();
+                    } catch {
+                        alert("❌ Falha de conexão ao cancelar.");
+                    }
+                    break;
+                }
+
+                case 'favoritar': {
+                    if (!id) return;
+                    if (!window.Seguranca.usuarioLogado()) { abrirModal(); return; }
+                    try {
+                        const res = await api(`/usuario/favoritar/${id}`, { method: 'PATCH' });
+                        const dados = await lerJson(res);
+                        if (res.ok) {
+                            const icone = document.getElementById(`fav-icon-${id}`);
+                            if (icone) {
+                                // textContent, nunca innerHTML: o emoji não é dado.
+                                icone.textContent = dados.favoritizado ? '❤️' : '🤍';
+                                icone.style.color = dados.favoritizado ? '#ec4899' : '#cbd5e1';
+                            }
+                            alert(`✅ ${dados.mensagem || 'Favorito atualizado!'}`);
+                        } else {
+                            alert(`❌ ${dados.erro || 'Erro ao favoritar'}`);
+                        }
+                    } catch {
+                        alert("❌ Falha de conexão.");
+                    }
+                    break;
+                }
+
+                case 'avaliar': {
+                    if (!id) return;
+                    abrirModalAvaliar(id);
+                    break;
+                }
+
+                case 'ver-candidatos': {
+                    if (!id) return;
+                    abrirModalCandidatos(id);
+                    break;
+                }
+
+                case 'fechar-equipe': {
+                    if (!id) return;
+                    salvarEquipe(id);
+                    break;
+                }
+
+                case 'cancelar-vaga': {
+                    if (!id) return;
+                    abrirModalCancelar(id);
+                    break;
+                }
+
+                case 'marcar-lida': {
+                    if (!id) return;
+                    marcarComoLida(id);
+                    break;
+                }
+
+                case 'selecionar-candidato': {
+                    const vagaId = idValido(alvo.dataset.vaga);
+                    const usuarioId = idValido(alvo.dataset.usuario);
+                    const tipo = alvo.dataset.tipo === 'reserva' ? 'reserva' : 'titular';
+                    if (!vagaId || !usuarioId) return;
+                    selecionarCandidato(vagaId, usuarioId, tipo);
+                    break;
+                }
+
+                case 'pagina': {
+                    const alvo_pagina = parseInt(alvo.dataset.pagina, 10);
+                    if (Number.isInteger(alvo_pagina) && alvo_pagina > 0) {
+                        paginaVagasAtual = alvo_pagina;
+                        carregarVagas();
+                    }
+                    break;
+                }
+            }
+        });
+        
+        // ==================================================================
+        // 📋 EXPERIÊNCIAS PROFISSIONAIS (cadastro)
+        // ==================================================================
+        function adicionarExperiencia() {
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:10000;';
+            // HTML 100% estático: nenhum dado do usuário entra aqui.
+            modal.innerHTML = `
+                <div style="background:white; padding:25px; border-radius:12px; max-width:400px; width:90%;">
+                    <h3>Adicionar Experiência Profissional</h3>
+                    <div class="campo" style="margin-bottom:15px;">
+                        <label>Local de Trabalho:</label>
+                        <input type="text" id="exp-local" placeholder="Ex: Restaurante XYZ" style="width:100%; padding:8px; border:1px solid #e2e8f0; border-radius:6px;">
+                    </div>
+                    <div class="campo" style="margin-bottom:15px;">
+                        <label>Tempo de Experiência (meses):</label>
+                        <input type="number" id="exp-tempo" min="1" max="1200" placeholder="Ex: 12" style="width:100%; padding:8px; border:1px solid #e2e8f0; border-radius:6px;">
+                    </div>
+                    <div class="campo" style="margin-bottom:15px;">
+                        <label>Descrição (opcional):</label>
+                        <input type="text" id="exp-descricao" maxlength="600" placeholder="Ex: Trabalhou como garçom" style="width:100%; padding:8px; border:1px solid #e2e8f0; border-radius:6px;">
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button type="button" data-fechar-modal style="flex:1; padding:10px; background:#94a3b8; color:white; border:none; border-radius:6px; cursor:pointer;">Cancelar</button>
+                        <button type="button" data-salvar-exp style="flex:1; padding:10px; background:#10b981; color:white; border:none; border-radius:6px; cursor:pointer;">Adicionar</button>
+                    </div>
+                </div>
+            `;
+
+            modal.addEventListener('click', (ev) => {
+                if (ev.target === modal || ev.target.hasAttribute('data-fechar-modal')) {
+                    modal.remove();
+                }
+                if (ev.target.hasAttribute('data-salvar-exp')) {
+                    salvarExperienciaCadastro('exp-local', 'exp-tempo', 'exp-descricao');
+                    modal.remove();
+                }
+            });
+
+            document.body.appendChild(modal);
+            document.getElementById('exp-local')?.focus();
+        }
+
+        function salvarExperienciaCadastro(localId, tempoId, descricaoId) {
+            const local = (document.getElementById(localId)?.value || '').trim();
+            const tempo = parseInt(document.getElementById(tempoId)?.value, 10) || 0;
+            const descricao = (document.getElementById(descricaoId)?.value || '').trim();
+
+            if (!local || tempo < 1) {
+                alert('Preencha local e tempo de experiência!');
+                return;
+            }
+
+            experienciasCadastro.push({ local, tempoMeses: tempo, descricao });
+            renderizarExperiencias();
+        }
+
+        function renderizarExperiencias() {
+            const container = document.getElementById('container-experiencias');
+            if (!container) return;
+
+            // Índice interpolado num atributo: validado contra o tamanho real.
+            container.innerHTML = experienciasCadastro.map((exp, i) => `
+                <div style="background:white; padding:10px; border-radius:6px; margin-bottom:8px; border-left:4px solid #2563eb; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <strong>${esc(exp.local)}</strong><br>
+                        <small style="color:#64748b;">${esc(exp.tempoMeses)} mês(es) ${exp.descricao ? '• ' + esc(exp.descricao) : ''}</small>
+                    </div>
+                    <button type="button" data-remover-exp="${indiceSeguro(i, experienciasCadastro.length)}" style="background:#dc2626; color:white; border:none; border-radius:4px; padding:5px 10px; cursor:pointer; font-weight:bold;">✕</button>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('container-experiencias')?.addEventListener('click', (ev) => {
+            const botao = ev.target.closest('[data-remover-exp]');
+            if (!botao) return;
+            const i = indiceSeguro(botao.dataset.removerExp, experienciasCadastro.length);
+            experienciasCadastro.splice(i, 1);
+            renderizarExperiencias();
+        });
+
+        // ==================================================================
+        // 🪟 MODAIS
+        // ==================================================================
+        function abrirModal() { document.getElementById('modal-auth').classList.add('ativo'); }
+        function fecharModal() { document.getElementById('modal-auth').classList.remove('ativo'); }
+        function fecharModalAvaliar() { document.getElementById('modal-avaliar').classList.remove('ativo'); }
+        function fecharModalCancelar() { document.getElementById('modal-cancelar-vaga').classList.remove('ativo'); }
+        function fecharModalCandidatos() { document.getElementById('modal-ver-candidatos').classList.remove('ativo'); }
+
+        function abrirModalAvaliar(contratoId) {
+            const id = idValido(contratoId);
+            if (!id) return;
+            document.getElementById('modal-avaliar').dataset.contratoId = id;
+            document.getElementById('modal-avaliar').classList.add('ativo');
+        }
+
+        function abrirModalCancelar(vagaId) {
+            const id = idValido(vagaId);
+            if (!id) return;
+            document.getElementById('modal-cancelar-vaga').dataset.vagaId = id;
+            document.getElementById('modal-cancelar-vaga').classList.add('ativo');
+        }
+
+        function alternarAbas(t) {
+            document.getElementById('box-login').classList.add('hidden');
+            document.getElementById('box-cadastro').classList.add('hidden');
+            document.getElementById('tab-login').classList.remove('active');
+            document.getElementById('tab-cadastro').classList.remove('active');
+            document.getElementById(`box-${t}`).classList.remove('hidden');
+            document.getElementById(`tab-${t}`).classList.add('active');
+        }
+
+        function mudarVisao(tipo) {
+            document.querySelectorAll('.tab-opcao').forEach(btn => btn.classList.remove('ativa'));
+            if (tipo === 'jobs') {
+                document.getElementById('tab-jobs').classList.add('ativa');
+                document.getElementById('secao-meus-jobs').classList.remove('hidden');
+                document.getElementById('secao-mural').classList.add('hidden');
+            } else {
+                document.getElementById('tab-mural').classList.add('ativa');
+                document.getElementById('secao-meus-jobs').classList.add('hidden');
+                document.getElementById('secao-mural').classList.remove('hidden');
+            }
+        }
+
+        // ==================================================================
+        // 👥 SELEÇÃO DE EQUIPE
+        // ==================================================================
+        const selecoesPendentes = {};
+
+        function obterSelecao(vagaId) {
+            if (!selecoesPendentes[vagaId]) selecoesPendentes[vagaId] = { titulares: [], reservas: [] };
+            return selecoesPendentes[vagaId];
+        }
+
+        function selecionarCandidato(vagaId, usuarioId, tipo) {
+            const selecao = obterSelecao(vagaId);
+            const lista = selecao[tipo];
+            const outra = tipo === 'titular' ? selecao.reservas : selecao.titulares;
+
+            // A mesma pessoa não pode ser titular e reserva ao mesmo tempo.
+            const idxOutra = outra.indexOf(usuarioId);
+            if (idxOutra !== -1) outra.splice(idxOutra, 1);
+
+            const idx = lista.indexOf(usuarioId);
+            if (idx === -1) lista.push(usuarioId);
+            else lista.splice(idx, 1);
+
+            atualizarVisualSelecao(vagaId);
+        }
+
+        function atualizarVisualSelecao(vagaId) {
+            const selecao = obterSelecao(vagaId);
+
+            document.querySelectorAll(`[data-vaga-selecao="${vagaId}"]`).forEach(botao => {
+                const usuario = idValido(botao.dataset.usuario);
+                const tipo = botao.dataset.tipo === 'reserva' ? 'reserva' : 'titular';
+                const ativo = selecao[tipo].includes(usuario);
+                botao.classList.toggle('selecionado-ativo', ativo);
+                botao.style.outline = ativo ? '3px solid #2563eb' : 'none';
+                botao.style.opacity = ativo ? '1' : '0.75';
+                // textContent: o rótulo é constante, nunca dado do servidor.
+                botao.textContent = ativo
+                    ? (tipo === 'titular' ? 'Titular ✅' : 'Reserva 🛡️')
+                    : (tipo === 'titular' ? 'Titular' : 'Reserva');
+            });
+
+            const contador = document.getElementById('contador-selecao-equipe');
+            if (contador) {
+                contador.textContent = `Titulares: ${selecao.titulares.length} | Reservas: ${selecao.reservas.length}`;
+            }
+        }
+
+        /**
+         * Carrega os candidatos via API dedicada. A lista pública de vagas não
+         * expõe contatos de terceiros (item 23) — só o dono da vaga recebe
+         * esses dados, decifrados no servidor.
+         */
+        async function abrirModalCandidatos(vagaId) {
+            const id = idValido(vagaId);
+            if (!id) return;
+
+            window.vagaEmSelecao = id;
+            selecoesPendentes[id] = { titulares: [], reservas: [] };
+
+            const container = document.getElementById('container-candidatos-detalhes');
+            container.innerHTML = '<p style="color:#64748b;">Carregando candidatos…</p>';
+
+            try {
+                const res = await api(`/vaga/${id}/candidatos`);
+                if (res.status === 401) { abrirModal(); return; }
+
+                const dados = await lerJson(res);
+                if (!res.ok) {
+                    container.innerHTML = `<p style="color:#dc2626;">${esc(dados.erro || 'Não foi possível carregar os candidatos.')}</p>`;
+                    return;
+                }
+
+                // textContent no cabeçalho: título é dado do usuário.
+                document.getElementById('titulo-vaga-candidatos').textContent = `👥 ${dados.titulo || 'Vaga'}`;
+
+                const candidatos = Array.isArray(dados.candidatos) ? dados.candidatos : [];
+
+                if (candidatos.length === 0) {
+                    container.innerHTML = '<p style="color:#64748b;">Nenhum currículo recebido ainda.</p>';
+                    document.getElementById('modal-ver-candidatos').classList.add('ativo');
+                    return;
+                }
+
+                container.innerHTML = candidatos.map(c => {
+                    const usuarioId = idValido(c.idUsuario);
+                    const foto = urlSegura(c.fotoPerfil) || IMAGEM_PADRAO;
+                    const exps = Array.isArray(c.experienciasDetalhadas) ? c.experienciasDetalhadas : [];
+
+                    return `
+                    <div style="background:white; border:2px solid #2563eb; border-radius:12px; padding:20px; display:flex; flex-direction:column; text-align:center;">
+                        <img src="${foto}" alt="${escAttr(c.nomeCompleto || c.nome || 'Perfil')}" style="width:100px; height:100px; border-radius:50%; object-fit:cover; margin:0 auto 12px;">
+                        <h3 style="margin:0 0 5px 0; color:#1f2937;">${esc(c.nomeCompleto || 'Sem nome')}</h3>
+                        <p style="margin:0 0 8px 0; color:#2563eb; font-weight:bold;">👤 ${esc(c.nome || '')}</p>
+                        <small style="color:#64748b; margin-bottom:8px;">
+                            <span style="display:block;">📞 ${esc(c.telefone || 'Não informado')}</span>
+                            <span style="display:block;">✉️ ${esc(c.email || 'Não informado')}</span>
+                            <span style="display:block;">📅 ${esc(c.idade ?? '—')} anos | ${esc(c.genero || '—')}</span>
+                        </small>
+                        ${exps.length ? `
+                        <div style="background:#f1f5f9; padding:10px; border-radius:8px; margin:10px 0; text-align:left;">
+                            <strong style="color:#2563eb;">📋 Experiências:</strong>
+                            ${exps.map(exp => `
+                            <div style="margin-top:8px; padding:8px; background:white; border-left:3px solid #10b981; border-radius:4px;">
+                                <strong>${esc(exp.local || '')}</strong><br>
+                                <small style="color:#64748b;">${esc(exp.tempoMeses ?? 0)} mês(es)</small>
+                                ${exp.descricao ? `<br><small>${esc(exp.descricao)}</small>` : ''}
+                            </div>`).join('')}
+                        </div>` : '<small style="color:#dc2626; display:block; margin:8px 0;">Sem experiências registradas</small>'}
+                        <div style="display:flex; gap:8px; margin-top:12px;">
+                            <button type="button" data-acao="selecionar-candidato" data-vaga="${id}" data-usuario="${usuarioId}" data-tipo="titular" class="btn-enviar" style="flex:1; background:#10b981; padding:10px;">Titular</button>
+                            <button type="button" data-acao="selecionar-candidato" data-vaga="${id}" data-usuario="${usuarioId}" data-tipo="reserva" class="btn-enviar" style="flex:1; background:#f59e0b; padding:10px;">Reserva</button>
+                        </div>
+                    </div>`;
+                }).join('');
+
+                document.getElementById('modal-ver-candidatos').classList.add('ativo');
+                atualizarVisualSelecao(id);
+            } catch {
+                container.innerHTML = '<p style="color:#dc2626;">Falha de conexão ao carregar candidatos.</p>';
+            }
+        }
+
+        async function confirmarSelecaoEquipe(vagaId) {
+            const id = idValido(vagaId || window.vagaEmSelecao);
+            if (!id) return;
+
+            const selecao = obterSelecao(id);
+            if (selecao.titulares.length === 0) {
+                alert('⚠️ Selecione pelo menos 1 Titular antes de confirmar.');
+                return;
+            }
+
+            try {
+                const res = await api(`/vaga/${id}/confirmar-equipe`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ titulares: selecao.titulares, reservas: selecao.reservas })
+                });
+                const dados = await lerJson(res);
+
+                if (res.ok) {
+                    alert('✅ ' + (dados.mensagem || 'Equipe confirmada com sucesso!'));
+                    fecharModalCandidatos();
+                    delete selecoesPendentes[id];
+                    carregarVagas();
+                } else {
+                    alert('❌ Erro ao confirmar: ' + (dados.erro || dados.mensagem || 'Erro desconhecido'));
+                }
+            } catch {
+                alert('❌ Falha de conexão ao tentar confirmar a equipe.');
+            }
+        }
+
+        // Confirma a seleção acumulada (chamado pelo botão estático do modal).
+        document.querySelector('[onclick*="confirmarSelecaoEquipe"]')?.addEventListener('click', () => {
+            window.vagaEmSelecao && confirmarSelecaoEquipe(window.vagaEmSelecao);
+        });
+
+        // ==================================================================
+        // 📝 CADASTRO / LOGIN / SESSÃO
+        // ==================================================================
+        document.getElementById('form-cadastro').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const body = {
+                nome: document.getElementById('cad-nome').value,
+                nomeSocial: document.getElementById('cad-nome-social').value,
+                cpf: document.getElementById('cad-cpf').value,
+                celular: document.getElementById('cad-celular').value,
+                email: document.getElementById('cad-email').value,
+                senha: document.getElementById('cad-senha').value,
+                tipo: document.querySelector('input[name="cad-tipo"]:checked')?.value,
+                genero: document.getElementById('cad-genero').value,
+                idade: document.getElementById('cad-idade').value,
+                experienciasDetalhadas: experienciasCadastro,
+                fotoPerfil: base64Image
+            };
+
+            try {
+                const res = await api('/auth/cadastro', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const dados = await lerJson(res);
+
+                if (res.ok) {
+                    alert(dados.mensagem || 'Sucesso! Faça o login.');
+                    document.getElementById('form-cadastro').reset();
+                    base64Image = '';
+                    experienciasCadastro = [];
+                    renderizarExperiencias();
+                    alternarAbas('login');
+                } else if (res.status === 429) {
+                    alert('⏳ ' + (dados.erro || 'Muitas tentativas. Aguarde alguns minutos.'));
+                } else if (res.status === 422) {
+                    const detalhe = (dados.detalhes || []).map(d => '• ' + d.mensagem).join('\n');
+                    alert('❌ Corrija os campos:\n' + (detalhe || dados.erro || 'Dados inválidos.'));
+                } else {
+                    alert('❌ ' + (dados.erro || 'Erro no cadastro.'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('❌ Falha de conexão.');
+            }
+        });
+
+        document.getElementById('form-login').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const res = await api('/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: document.getElementById('log-email').value,
+                        senha: document.getElementById('log-senha').value
+                    })
+                });
+                const dados = await lerJson(res);
+
+                if (!res.ok) {
+                    alert(res.status === 423 || res.status === 429
+                        ? '⏳ ' + (dados.erro || 'Muitas tentativas de login.')
+                        : '❌ ' + (dados.erro || 'Erro no login.'));
+                    return;
+                }
+
+                // Access token fica só em memória; refresh token é rotacionado.
+                window.Seguranca.guardarSessao(dados);
+                localStorage.setItem('nomeUsuario', dados.usuario.nome);
+                localStorage.setItem('tipoUsuario', dados.usuario.tipo);
+                localStorage.setItem('usuarioId', dados.usuario.id);
+
+                fecharModal();
+                atualizarSessao();
+                carregarVagas();
+            } catch (err) {
+                console.error(err);
+                alert('❌ Falha de conexão.');
+            }
+        });
+
+        function atualizarSessao() {
+            const nome = localStorage.getItem('nomeUsuario') || '';
+            const tipo = localStorage.getItem('tipoUsuario') || '';
+            const div = document.getElementById('status-sessao');
+
+            if (nome) {
+                // textContent para o nome; o link de sair é HTML estático.
+                div.innerHTML = '👤 <b></b> | <a href="#" data-acao="sair">Sair</a>';
+                div.querySelector('b').textContent = nome;
+                div.style.background = 'white';
+                div.style.color = 'black';
+
+                document.getElementById('secao-postar-vaga').classList.toggle('hidden', tipo !== 'contratante');
+                document.getElementById('secao-meus-jobs').classList.toggle('hidden', tipo !== 'contratado');
+                document.getElementById('secao-minhas-vagas').classList.toggle('hidden', tipo !== 'contratante');
+                document.getElementById('secao-mural').classList.toggle('hidden', tipo !== 'contratado');
+
+                if (tipo === 'contratado') {
+                    document.getElementById('container-tabs').classList.remove('hidden');
+                    mudarVisao('jobs');
+                } else {
+                    document.getElementById('container-tabs').classList.add('hidden');
+                }
+            } else {
+                div.innerHTML = '<button class="btn-auth" data-acao="abrir-auth">Entrar</button>';
+                div.style.background = 'transparent';
+                ['secao-postar-vaga', 'secao-meus-jobs', 'secao-minhas-vagas', 'secao-mural', 'container-tabs']
+                    .forEach(id => document.getElementById(id)?.classList.add('hidden'));
+            }
+        }
+
+        async function logout() {
+            try {
+                // Revoga a família de refresh tokens no servidor (item 24).
+                await api('/auth/logout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refreshToken: localStorage.getItem('refreshFreela') || '' })
+                });
+            } catch { /* logout local acontece de todo modo */ }
+
+            window.Seguranca.limparSessao();
+            localStorage.removeItem('nomeUsuario');
+            localStorage.removeItem('tipoUsuario');
+            localStorage.removeItem('usuarioId');
+
+            atualizarSessao();
+            carregarVagas();
+        }
+
+        // Botões injetados por atualizarSessao()
+        document.addEventListener('click', (ev) => {
+            const sair = ev.target.closest('[data-acao="sair"]');
+            if (sair) { ev.preventDefault(); logout(); return; }
+
+            const abrirAuth = ev.target.closest('[data-acao="abrir-auth"]');
+            if (abrirAuth) abrirModal();
+        });
+
+        // ==================================================================
+        // 📅 MÚLTIPLOS DIAS DA VAGA
+        // ==================================================================
+        let diasAdicionaisvaga = [];
+
+        function toggleMultiplosDias() {
+            const marcado = document.getElementById('multiplosDias').checked;
+            document.getElementById('container-multiplos-dias').style.display = marcado ? 'block' : 'none';
+        }
+
+        function adicionarDiaVaga() {
+            if (diasAdicionaisvaga.length >= 30) {
+                alert('Máximo de 30 dias adicionais.');
+                return;
+            }
+            diasAdicionaisvaga.push({ data: '', horarioInicio: '', horarioFim: '' });
+            renderizarDiasVaga();
+        }
+
+        function renderizarDiasVaga() {
+            const container = document.getElementById('lista-dias-adicionais');
+            container.innerHTML = diasAdicionaisvaga.map((dia, i) => {
+                const idx = indiceSeguro(i, diasAdicionaisvaga.length);
+                // Os valores vêm de <input type="date|time">, ainda assim
+                // passent por escAttr: o DOM pode ser manipulado por terceiros.
+                return `
+                <div style="background:white; padding:12px; border-radius:6px; margin-bottom:10px; border-left:4px solid #10b981; display:flex; gap:10px; align-items:flex-end;">
+                    <div style="flex:1;">
+                        <label style="font-size:0.85rem; color:#64748b;">📅 Data:</label>
+                        <input type="date" data-dia="${idx}" data-campo="data" value="${escAttr(dia.data)}" style="width:100%; padding:6px; border:1px solid #e2e8f0; border-radius:4px;">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="font-size:0.85rem; color:#64748b;">Início:</label>
+                        <input type="time" data-dia="${idx}" data-campo="horarioInicio" value="${escAttr(dia.horarioInicio)}" style="width:100%; padding:6px; border:1px solid #e2e8f0; border-radius:4px;">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="font-size:0.85rem; color:#64748b;">Fim:</label>
+                        <input type="time" data-dia="${idx}" data-campo="horarioFim" value="${escAttr(dia.horarioFim)}" style="width:100%; padding:6px; border:1px solid #e2e8f0; border-radius:4px;">
+                    </div>
+                    <button type="button" data-remover-dia="${idx}" style="background:#dc2626; color:white; border:none; border-radius:4px; padding:6px 12px; cursor:pointer; font-weight:bold;">✕</button>
+                </div>`;
+            }).join('');
+        }
+
+        document.getElementById('container-multiplos-dias')?.addEventListener('input', (ev) => {
+            const input = ev.target;
+            if (!input.dataset.dia) return;
+            const idx = indiceSeguro(input.dataset.dia, diasAdicionaisvaga.length);
+            const campo = input.dataset.campo;
+            if (!['data', 'horarioInicio', 'horarioFim'].includes(campo)) return;
+            diasAdicionaisvaga[idx][campo] = input.value;
+        });
+
+        document.getElementById('container-multiplos-dias')?.addEventListener('click', (ev) => {
+            const botao = ev.target.closest('[data-remover-dia]');
+            if (!botao) return;
+            diasAdicionaisvaga.splice(indiceSeguro(botao.dataset.removerDia, diasAdicionaisvaga.length), 1);
+            renderizarDiasVaga();
+        });
+
+        document.getElementById('form-vaga').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!window.Seguranca.usuarioLogado()) {
+                alert('Você precisa estar autenticado para criar uma vaga!');
+                abrirModal();
+                return;
+            }
+
+            const dataTrabalho = document.getElementById('dataTrabalho').value;
+            const horarioInicio = document.getElementById('horarioInicio').value;
+            const horarioFim = document.getElementById('horarioFim').value;
+
+            const datasTrabalho = diasAdicionaisvaga
+                .filter(d => d.data && d.horarioInicio && d.horarioFim)
+                .map(d => ({ data: d.data, horarioInicio: d.horarioInicio, horarioFim: d.horarioFim }));
+
+            try {
+                const res = await api('/vaga', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        titulo: document.getElementById('titulo').value,
+                        valor: document.getElementById('valor').value,
+                        vagasTotais: document.getElementById('vagasTotais').value,
+                        dataTrabalho: dataTrabalho || undefined,
+                        horarioInicio,
+                        horarioFim,
+                        endereco: document.getElementById('endereco').value,
+                        datasTrabalho
+                    })
+                });
+                const resultado = await lerJson(res);
+
+                if (res.ok) {
+                    alert('✅ ' + (resultado.mensagem || 'Vaga criada com sucesso!'));
+                    document.getElementById('form-vaga').reset();
+                    diasAdicionaisvaga = [];
+                    document.getElementById('container-multiplos-dias').style.display = 'none';
+                    paginaVagasAtual = 1;
+                    carregarVagas();
+                } else if (res.status === 422) {
+                    const detalhe = (resultado.detalhes || []).map(d => '• ' + d.mensagem).join('\n');
+                    alert('❌ Corrija os campos:\n' + (detalhe || resultado.erro));
+                } else {
+                    alert('❌ ' + (resultado.erro || 'Falha ao criar vaga.'));
+                }
+            } catch {
+                alert('❌ Falha de conexão.');
+            }
+        });
+
+        // ==================================================================
+        // ⭐ AVALIAÇÕES
+        // ==================================================================
+        document.getElementById('form-avaliar').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const contratoId = idValido(document.getElementById('modal-avaliar').dataset.contratoId);
+            if (!contratoId) return;
+
+            try {
+                const res = await api(`/usuario/${contratoId}/avaliar`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nota: parseInt(document.getElementById('avaliar-nota').value, 10),
+                        comentario: document.getElementById('avaliar-comentario').value
+                    })
+                });
+                const dados = await lerJson(res);
+
+                if (res.ok) {
+                    alert(dados.mensagem || 'Avaliação salva!');
+                    fecharModalAvaliar();
+                    document.getElementById('form-avaliar').reset();
+                } else {
+                    alert('❌ ' + (dados.erro || 'Não foi possível salvar a avaliação.'));
+                }
+            } catch {
+                alert('❌ Falha de conexão.');
+            }
+        });
+
+        async function renderizarAvaliacoes(usuarioId, containerId) {
+            const id = idValido(usuarioId);
+            const container = document.getElementById(containerId);
+            if (!id || !container) return;
+
+            try {
+                const res = await api(`/usuario/${id}`);
+                if (!res.ok) return;
+
+                const usuario = await lerJson(res);
+                const avaliacoes = Array.isArray(usuario.avaliacoes) ? usuario.avaliacoes : [];
+
+                if (avaliacoes.length === 0) {
+                    container.innerHTML = '<small style="color:#94a3b8;">Sem avaliações ainda</small>';
+                    return;
+                }
+
+                const mediaNota = usuario.mediaNotas || 0;
+                container.innerHTML = `
+                    <div style="margin-top:12px; padding-top:12px; border-top:1px solid #e2e8f0;">
+                        <strong>⭐ Nota Média: ${esc(String(mediaNota))} ${'⭐'.repeat(Math.max(0, Math.min(5, Math.round(Number(mediaNota) || 0))))}</strong>
+                        <div style="margin-top:8px;">
+                            ${avaliacoes.map(av => `
+                            <div style="background:#f1f5f9; padding:10px; border-radius:6px; margin-bottom:8px; border-left:4px solid #f59e0b;">
+                                <strong>${esc(av.autorId?.nome || av.autorId?.nomeSocial || 'Usuário')}</strong> -
+                                <span style="color:#f59e0b;">${'⭐'.repeat(Math.max(0, Math.min(5, numeroSeguro(av.nota, 0))))}</span>
+                                <p style="margin:6px 0; font-size:0.9rem; color:#475569;">${esc(av.comentario || '(sem comentário)')}</p>
+                                <small style="color:#94a3b8;">${esc(new Date(av.data).toLocaleDateString('pt-BR'))}</small>
+                            </div>`).join('')}
+                        </div>
+                    </div>`;
+            } catch (err) {
+                console.error('Erro ao carregar avaliações:', err);
+            }
+        }
+
+        // ==================================================================
+        // ❌ CANCELAMENTO DE VAGA
+        // ==================================================================
+        document.getElementById('form-cancelar-vaga').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const vagaId = idValido(document.getElementById('modal-cancelar-vaga').dataset.vagaId);
+            if (!vagaId) return;
+
+            try {
+                const res = await api(`/vaga/${vagaId}/cancelar-vaga`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ motivoCancelamento: document.getElementById('motivo-cancelamento').value })
+                });
+                const dados = await lerJson(res);
+
+                if (res.ok) {
+                    alert(dados.mensagem || 'Vaga cancelada.');
+                    fecharModalCancelar();
+                    document.getElementById('form-cancelar-vaga').reset();
+                    carregarVagas();
+                } else {
+                    alert('❌ ' + (dados.erro || 'Não foi possível cancelar a vaga.'));
+                }
+            } catch {
+                alert('❌ Falha de conexão.');
+            }
+        });
+
+        // ==================================================================
+        // 📢 NOTIFICAÇÕES
+        // ==================================================================
+        async function carregarNotificacoesSobDemanda() {
+            const container = document.getElementById('container-notificacoes');
+            if (!container) return;
+
+            if (!window.Seguranca.usuarioLogado()) {
+                container.innerHTML = '<p style="color:#64748b;">Faça login para ver notificações.</p>';
+                return;
+            }
+
+            try {
+                const res = await api('/notificacoes?limite=20');
+                if (!res.ok) return;
+
+                const dados = await lerJson(res);
+                renderizarNotificacoes(Array.isArray(dados.dados) ? dados.dados : []);
+            } catch (error) {
+                console.error('Erro ao carregar notificações:', error);
+            }
+        }
+
+        function renderizarNotificacoes(listaNotificacoes) {
+            const container = document.getElementById('container-notificacoes');
+            container.innerHTML = '';
+
+            if (!listaNotificacoes.length) {
+                container.innerHTML = '<p>Nenhuma notificação nova.</p>';
+                return;
+            }
+
+            for (const notif of listaNotificacoes) {
+                const div = document.createElement('div');
+                div.className = 'notificacao-card';
+                div.id = `notif-${escAttr(notif._id)}`;
+
+                div.innerHTML = `
+                    <p>${esc(notif.mensagem)}</p>
+                    <button data-acao="marcar-lida" data-id="${escAttr(notif._id)}">Entendido ✅</button>
+                `;
+                container.appendChild(div);
+            }
+        }
+
+        async function marcarComoLida(id) {
+            const notificacaoId = idValido(id);
+            if (!notificacaoId) return;
+
+            try {
+                await api(`/notificacoes/${notificacaoId}/ler`, { method: 'PATCH' });
+                document.getElementById(`notif-${notificacaoId}`)?.remove();
+            } catch (err) {
+                console.error('Erro ao marcar como lida:', err);
+            }
+        }
+
+        // ==================================================================
+        // 💼 LISTAGEM PAGINADA DE VAGAS (item 29)
+        // ==================================================================
+        let paginaVagasAtual = 1;
+
+        function corDoStatus(status) {
+            if (status === 'aberta') return '#2563eb';
+            if (status === 'preenchida') return '#10b981';
+            if (status === 'fechada') return '#7c3aed';
+            return '#dc2626';
+        }
+
+        function dataFormatada(vaga) {
+            return vaga?.dataTrabalho ? new Date(vaga.dataTrabalho).toLocaleDateString('pt-BR') : 'A combinar';
+        }
+
+        /** Card público da vaga. Só recebe dados já escapados na interpolação. */
+        function gerarHTMLCard(vaga) {
+            if (!vaga || !idValido(vaga._id)) return '';
+
+            const status = esc(vaga.status_vaga || 'aberta');
+            const cor = corDoStatus(vaga.status_vaga);
+            const temDetalhes = vaga.dataTrabalho || vaga.horario || vaga.endereco;
+
+            return `
+            <div class="cartao-vaga" data-vaga-id="${escAttr(vaga._id)}" style="background:white; border-radius:8px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:15px;">
+                <h3 style="margin:0 0 12px 0; color:#1f2937;">${esc(vaga.titulo || 'Vaga sem título')}</h3>
+                ${vaga.descricao ? `<p style="color:#475569; font-size:0.9rem; margin:0 0 10px 0;">${esc(vaga.descricao)}</p>` : ''}
+                <div style="color:#10b981; font-weight:800; font-size:1.2rem; margin-bottom:8px;">R$ ${esc(numeroSeguro(vaga.valor, 0))}</div>
+                <div style="display:inline-block; background:${cor}; color:white; padding:6px 12px; border-radius:6px; font-weight:bold; font-size:0.85rem; margin-bottom:12px; text-transform:uppercase;">${status}</div>
+                ${temDetalhes ? `
+                <div style="background:#f1f5f9; padding:12px; border-radius:6px; margin:12px 0; font-size:0.9rem; border-left:4px solid #2563eb;">
+                    ${vaga.dataTrabalho ? `<div style="margin-bottom:6px;"><strong>📅 Data:</strong> ${esc(new Date(vaga.dataTrabalho).toLocaleDateString('pt-BR'))}</div>` : ''}
+                    ${vaga.horario ? `<div style="margin-bottom:6px;"><strong>🕐 Horário:</strong> ${esc(vaga.horario)}</div>` : ''}
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                        <span><strong>📍 Local:</strong> ${esc(vaga.endereco || 'Não informado')}</span>
+                        ${linkMaps(vaga.endereco)}
+                    </div>
+                </div>` : ''}
+            </div>`;
+        }
+
+        function botaoDeAcao(vaga, meuTipo) {
+            const status = meuStatus || vaga.meuStatus;
+            if (!status) return '';
+
+            if (meuTipo === 'contratado') {
+                if (status.contratado && !status.confirmado && !status.expirou) {
+                    return '<button class="btn-enviar btn-confirmar" data-acao="confirmar-presenca" data-id="' + escAttr(vaga._id) + '" style="background:#22c55e;">Confirmar Minha Vaga 🎯</button>';
+                }
+                if (!status.candidato && vaga.status_vaga === 'aberta') {
+                    return '<button class="btn-enviar btn-candidatar" data-acao="candidatar" data-id="' + escAttr(vaga._id) + '" style="background:#2563eb;">Enviar Meu Currículo ⚡</button>';
+                }
+                if (status.candidato) {
+                    return '<button disabled class="btn-enviar" style="background:#64748b;">Currículo em Análise ⏳</button>';
+                }
+            }
+            return '';
+        }
+
+        /** Card na seção "Meus Jobs" (contratado). */
+        function renderizarMeuJob(vaga, status, container) {
+            const corBorda = status.confirmado ? '#10b981' : '#f59e0b';
+            const rotulo = status.confirmado ? '✅ Garantido' : (status.expirou ? '⛔ Prazo expirado' : '⚠️ Precisa Confirmar');
+
+            container.insertAdjacentHTML('beforeend', `
+                <div style="background:white; padding:15px; border-radius:8px; border-left:5px solid ${corBorda}; display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div style="flex:1;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <strong>${esc(vaga.titulo || 'Sem título')}</strong>
+                            <span style="color:#10b981; font-weight:bold;">R$ ${esc(numeroSeguro(vaga.valor, 0))}</span>
+                        </div>
+                        <small style="color:#64748b;">📅 ${esc(dataFormatada(vaga))} | 🕐 ${esc(vaga.horario || 'A combinar')} | 📍 ${esc(vaga.endereco || 'A combinar')} ${linkMaps(vaga.endereco)}</small><br>
+                        <small style="color:#64748b;">Status: ${esc(rotulo)}</small>
+                    </div>
+                    <button class="btn-enviar btn-cancelar-vaga" data-acao="desistir" data-id="${escAttr(vaga._id)}" style="width:auto; padding:8px 15px; font-size:0.8rem; margin-left:10px;">Desistir ❌</button>
+                </div>`);
+        }
+
+        /** Card na seção "Minhas Vagas" (contratante). */
+        function renderizarMinhaVaga(vaga, container) {
+            const cor = corDoStatus(vaga.status_vaga);
+            const totalCandidatos = numeroSeguro(vaga.totalCandidatos, 0);
+            const totalContratados = numeroSeguro(vaga.totalContratados, 0);
+
+            container.insertAdjacentHTML('beforeend', `
+                <div style="background:white; border-radius:12px; border-left:6px solid ${cor}; box-shadow:0 2px 8px rgba(0,0,0,0.1); overflow:hidden;">
+                    <div style="padding:20px; background:linear-gradient(135deg, ${cor}15 0%, ${cor}05 100%);">
+                        <div style="margin-bottom:15px;">
+                            <h3 style="margin:0 0 8px 0; color:#1f2937; font-size:1.3rem;">${esc(vaga.titulo || 'Sem título')}</h3>
+                            <div style="display:flex; align-items:center; gap:15px; flex-wrap:wrap;">
+                                <span style="background:#10b981; color:white; padding:6px 12px; border-radius:6px; font-weight:bold; font-size:1.1rem;">R$ ${esc(numeroSeguro(vaga.valor, 0))}</span>
+                                <span style="background:${cor}; color:white; padding:6px 12px; border-radius:6px; font-weight:bold; font-size:0.85rem; text-transform:uppercase;">${esc(vaga.status_vaga || 'Desconhecido')}</span>
+                            </div>
+                        </div>
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-top:12px;">
+                            <div style="background:white; padding:10px 12px; border-radius:6px; border-left:3px solid #2563eb;">
+                                <small style="color:#64748b; display:block;">📅 Data</small>
+                                <strong style="color:#1f2937;">${esc(dataFormatada(vaga))}</strong>
+                            </div>
+                            <div style="background:white; padding:10px 12px; border-radius:6px; border-left:3px solid #f59e0b;">
+                                <small style="color:#64748b; display:block;">🕐 Horário</small>
+                                <strong style="color:#1f2937;">${esc(vaga.horario || 'A combinar')}</strong>
+                            </div>
+                            <div style="background:white; padding:10px 12px; border-radius:6px; border-left:3px solid #10b981;">
+                                <small style="color:#64748b; display:block;">📍 Local</small>
+                                <strong style="color:#1f2937;">${esc(vaga.endereco || 'A combinar')}</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding:15px 20px; background:#f8fafc; border-top:1px solid #e2e8f0; border-bottom:1px solid #e2e8f0;">
+                        <div style="display:flex; gap:20px; flex-wrap:wrap; align-items:center;">
+                            <div style="text-align:center;">
+                                <div style="font-size:1.5rem; font-weight:bold; color:#2563eb;">👥</div>
+                                <small style="color:#64748b;">Contratados: <strong>${esc(totalContratados)}</strong></small>
+                            </div>
+                            <div style="text-align:center;">
+                                <div style="font-size:1.5rem; font-weight:bold; color:#f59e0b;">⏳</div>
+                                <small style="color:#64748b;">Reservas: <strong>${esc(Math.max(0, numeroSeguro(vaga.vagasTotais, 1) - totalContratados))}</strong></small>
+                            </div>
+                            <div style="text-align:center;">
+                                <div style="font-size:1.5rem; font-weight:bold; color:#10b981;">📬</div>
+                                <small style="color:#64748b;">Currículos: <strong>${esc(totalCandidatos)}</strong></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding:15px 20px; display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+                        ${totalCandidatos > 0 ? `
+                        <button data-acao="ver-candidatos" data-id="${escAttr(vaga._id)}" style="background:linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color:white; border:none; padding:12px 24px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.95rem;">
+                            👥 Ver Candidatos (${esc(totalCandidatos)})
+                        </button>` : ''}
+                        ${vaga.status_vaga !== 'cancelada' ? `
+                        <button data-acao="cancelar-vaga" data-id="${escAttr(vaga._id)}" style="background:linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color:white; border:none; padding:12px 24px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.95rem;">
+                            ❌ Cancelar Vaga
+                        </button>` : '<span style="color:#94a3b8; font-weight:bold; padding:12px 0;">Vaga Cancelada</span>'}
+                    </div>
+                </div>`);
+        }
+
+        function renderizarMuralGeral(vaga, meuTipo, container) {
+            const cardHTML = gerarHTMLCard(vaga);
+            if (!cardHTML) return;
+
+            container.insertAdjacentHTML('beforeend', cardHTML);
+
+            const botao = botaoDeAcao(vaga, meuTipo);
+            if (botao) {
+                const ultimoCard = container.lastElementChild;
+                const botaoDiv = document.createElement('div');
+                botaoDiv.style.cssText = 'padding: 0 20px 20px 20px; text-align: center;';
+                botaoDiv.innerHTML = botao;
+                ultimoCard.appendChild(botaoDiv);
+            }
+        }
+
+        function renderizarPaginacao(paginacao) {
+            const nav = document.getElementById('paginacao-vagas');
+            if (!nav || !paginacao) return;
+
+            if (!paginacao.total) {
+                nav.innerHTML = '';
+                return;
+            }
+
+            const { pagina, totalPaginas } = paginacao;
+            const janela = [];
+            const inicio = Math.max(1, pagina - 2);
+            const fim = Math.min(totalPaginas, inicio + 4);
+            for (let p = inicio; p <= fim; p++) janela.push(p);
+
+            nav.innerHTML = `
+                <button data-acao="pagina" data-pagina="${pagina - 1}" ${pagina <= 1 ? 'disabled' : ''} style="padding:8px 14px; border-radius:6px; border:1px solid #cbd5e1; background:white; cursor:pointer;">← Anterior</button>
+                ${janela.map(p => `<button data-acao="pagina" data-pagina="${p}" style="padding:8px 14px; border-radius:6px; border:1px solid ${p === pagina ? '#2563eb' : '#cbd5e1'}; background:${p === pagina ? '#2563eb' : 'white'}; color:${p === pagina ? 'white' : '#1f2937'}; font-weight:${p === pagina ? 'bold' : 'normal'}; cursor:pointer;">${p}</button>`).join('')}
+                <button data-acao="pagina" data-pagina="${pagina + 1}" ${pagina >= totalPaginas ? 'disabled' : ''} style="padding:8px 14px; border-radius:6px; border:1px solid #cbd5e1; background:white; cursor:pointer;">Próxima →</button>
+                <span style="color:#64748b; font-size:0.85rem;">Página ${esc(pagina)} de ${esc(totalPaginas)} · ${esc(paginacao.total)} vaga(s)</span>
+            `;
+        }
+
+        async function carregarVagas() {
+            const container = document.getElementById('lista-vagas');
+            const jobs = document.getElementById('lista-meus-jobs');
+            const minhasVagas = document.getElementById('lista-minhas-vagas');
+
+            if (!container || !jobs || !minhasVagas) return;
+
+            const meuTipo = localStorage.getItem('tipoUsuario') || '';
+
+            if (!window.Seguranca.usuarioLogado()) {
+                container.innerHTML = '<p style="color:#64748b;">Faça login para ver as vagas.</p>';
+                jobs.innerHTML = '';
+                minhasVagas.innerHTML = '';
+                renderizarPaginacao(null);
+                return;
+            }
+
+            try {
+                // A API responde paginado; nunca pedimos a lista inteira.
+                const res = await api(`/vagas?pagina=${paginaVagasAtual}&limite=12`);
+                if (res.status === 401) {
+                    container.innerHTML = '<p style="color:#64748b;">Faça login para ver as vagas.</p>';
+                    return;
+                }
+                if (!res.ok) throw new Error('Erro ao buscar vagas');
+
+                const corpo = await lerJson(res);
+                const vagas = Array.isArray(corpo.dados) ? corpo.dados : [];
+
+                container.innerHTML = '';
+                jobs.innerHTML = '';
+                minhasVagas.innerHTML = '';
+
+                if (vagas.length === 0) {
+                    container.innerHTML = '<p style="color:#64748b;">Nenhuma vaga encontrada nesta página.</p>';
+                }
+
+                for (const vaga of vagas) {
+                    if (!vaga || !idValido(vaga._id)) continue;
+                    // `meuStatus` é calculado no servidor — a lista pública nunca
+                    // traz dados de contato de terceiros.
+                    const status = vaga.meuStatus;
+
+                    if (meuTipo === 'contratado' && status && (status.contratado || status.reserva)) {
+                        renderizarMeuJob(vaga, status, jobs);
+                    }
+                    if (meuTipo === 'contratante' && status?.souDono) {
+                        renderizarMinhaVaga(vaga, minhasVagas);
+                    }
+                    renderizarMuralGeral(vaga, meuTipo, container);
+                }
+
+                renderizarPaginacao(corpo.paginacao);
+            } catch (error) {
+                console.error('Erro ao carregar vagas:', error);
+                container.innerHTML = '<p style="color:#dc2626;">Não foi possível carregar as vagas.</p>';
+            }
+        }
+
+        // ==================================================================
+        // 🚀 INICIALIZAÇÃO
+        // ==================================================================
+        atualizarSessao();
+        carregarVagas();
+      </script>
+
+  <div id="container-notificacoes" style="position: fixed; top: 80px; right: 20px; z-index: 9999; max-width: 400px; max-height: 600px; overflow-y: auto;"></div>
+ </body>
+</html>

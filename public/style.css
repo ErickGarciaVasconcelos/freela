@@ -1,0 +1,736 @@
+/* ==========================================================================
+   🎨 GLOBAL STYLES & VARIABLES
+   ========================================================================== */
+:root {
+    --bg-primary: #f8fafc;
+    --surface: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --brand-dark: #1e293b;
+    --brand-accent: #2563eb;
+    --brand-accent-hover: #1d4ed8;
+    --success: #10b981;
+    --success-bg: #ecfdf5;
+    --success-text: #065f46;
+    --warning: #f59e0b;
+    --warning-bg: #fffbeb;
+    --warning-text: #92400e;
+    --border-color: #e2e8f0;
+    --radius: 12px;
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-main);
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   HEADER & SESSÃO DE USUÁRIO
+   ========================================================================== */
+header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: white;
+    text-align: center;
+    padding: 3.5rem 1rem;
+    box-shadow: var(--shadow);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+header p {
+    color: #94a3b8;
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+}
+
+.header-right {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 10;
+}
+
+#status-sessao {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#status-sessao a {
+    color: #f87171;
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.2s;
+}
+
+#status-sessao a:hover {
+    color: #ef4444;
+    text-decoration: underline;
+}
+
+.btn-auth {
+    background-color: var(--brand-accent);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: all 0.2s;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.btn-auth:hover {
+    background-color: var(--brand-accent-hover);
+    transform: scale(1.03);
+}
+
+/* ==========================================================================
+   LAYOUT PRINCIPAL (CONTAINER & GRID)
+   ========================================================================== */
+.container {
+    max-width: 1100px;
+    margin: 2.5rem auto;
+    padding: 0 1.5rem;
+}
+
+section h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--brand-dark);
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-left: 0.75rem;
+}
+
+section h2::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 4px;
+    bottom: 4px;
+    width: 4px;
+    background-color: var(--brand-accent);
+    border-radius: 20px;
+}
+
+/* ==========================================================================
+   COMPONENTES DE FORMULÁRIO (INPUTS & BOTÕES)
+   ========================================================================== */
+.formulario-secao {
+    background: var(--surface);
+    padding: 2rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.formulario-secao:focus-within {
+    box-shadow: var(--shadow-md);
+}
+
+.campo {
+    margin-bottom: 1.25rem;
+}
+
+.campo label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 0.5rem;
+}
+
+.campo input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #f8fafc;
+    color: var(--text-main);
+    transition: all 0.2s;
+}
+
+.campo input:focus {
+    outline: none;
+    border-color: var(--brand-accent);
+    background-color: var(--surface);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.btn-enviar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.85rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.btn-enviar:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-enviar:active {
+    transform: translateY(0);
+}
+
+.btn-cancelar {
+    background-color: #ef4444 !important;
+    margin-top: 5px;
+}
+
+.btn-cancelar:hover {
+    background-color: #dc2626 !important;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, var(--border-color), transparent);
+    margin: 4rem 0;
+}
+
+/* ==========================================================================
+   MURAL DE VAGAS GERAL
+   ========================================================================== */
+.grid-vagas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.75rem;
+    margin-top: 1.5rem;
+}
+
+.cartao-vaga {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s;
+}
+
+.cartao-vaga:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.cartao-vaga h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--brand-dark);
+}
+
+.status-badge {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    letter-spacing: 0.05em;
+}
+
+.status-badge.preenchida {
+    background-color: #e0f2fe;
+    color: #0369a1;
+}
+
+.status-badge.aberta {
+    background-color: var(--success-bg);
+    color: var(--success-text);
+}
+
+.info-freela {
+    background-color: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    color: #334155;
+}
+
+.info-freela strong {
+    color: var(--brand-dark);
+}
+
+.info-fila {
+    margin-top: 1.25rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    background: #fff;
+    padding: 0.5rem 0;
+    border-top: 1px dashed var(--border-color);
+}
+
+.info-fila strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #475569;
+}
+
+.carregando {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--text-muted);
+    padding: 3rem 1rem;
+    font-style: italic;
+}
+
+/* ==========================================================================
+   JANELA FLUTUANTE (MODAL COMPLETO COM ROLAGEM)
+   ========================================================================== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 100;
+    padding: 1rem;
+}
+
+.modal.ativo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 2.5rem 2rem;
+    border-radius: var(--radius);
+    width: 100%;
+    max-width: 500px; 
+    box-shadow: var(--shadow-md);
+    position: relative;
+    animation: surgimentoSuave 0.25s ease-out;
+    max-height: 90vh; 
+    overflow-y: auto; 
+}
+
+.fechar-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    font-size: 1.75rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.fechar-modal:hover {
+    color: #ef4444;
+}
+
+.modal-tabs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    background: #f1f5f9;
+    padding: 0.25rem;
+    border-radius: 8px;
+    margin-bottom: 1.75rem;
+}
+
+.tab-btn {
+    border: none;
+    background: transparent;
+    padding: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    background: white;
+    color: var(--brand-dark);
+    box-shadow: var(--shadow);
+}
+
+.auth-box h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.auth-box h2::before {
+    display: none; 
+}
+
+.hidden {
+    display: none !important;
+}
+
+.modal-content::-webkit-scrollbar {
+    width: 6px;
+}
+.modal-content::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+.modal-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+@keyframes surgimentoSuave {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* ==========================================================================
+   🏢 CRASHÁS DE CONTATO (VISÃO PRIVADA DO CONTRATANTE NO MURAL)
+   ========================================================================== */
+.linha-candidato-container {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-top: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.candidato-topo-linha {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+}
+
+.candidato-status-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+.candidato-status-tag.status-vaga-fixada {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+.candidato-status-tag.status-vaga-pendente {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.painel-contato-dono {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 0.6rem;
+    padding-top: 0.6rem;
+    border-top: 1px dashed #e2e8f0;
+}
+
+.badge-contato {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+}
+
+.badge-contato-fone {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid #bfdbfe;
+}
+
+.font-registro {
+    border-left: 3px solid #64748b;
+    font-style: italic;
+}
+
+/* ==========================================================================
+   📸 PAINEL DE RECRUTAMENTO (PRODUTO PREMIUM COM COLUNAS EM GRID) ✅
+   ========================================================================== */
+.painel-recrutamento {
+    margin-top: 0;
+    background: #f0f9ff;
+    border-radius: 0;
+    padding: 20px;
+    border: none;
+    border-top: 2px solid #2563eb;
+}
+
+/* Força a quebra lateral de no máximo 2 cards em celulares */
+.grid-candidatos {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(2, 1fr); 
+}
+
+/* Desktops mudam automaticamente para 3 colunas de candidatos */
+@media (min-width: 768px) {
+    .grid-candidatos {
+        grid-template-columns: repeat(3, 1fr); 
+    }
+}
+
+/* Card reestruturado verticalmente para não estourar dados */
+.candidato-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.candidato-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(37, 99, 235, 0.15);
+    border-color: #2563eb;
+    background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+}
+
+.candidato-foto {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #e2e8f0;
+    border: 3px solid #2563eb;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+}
+
+.candidato-info {
+    flex-grow: 1;
+    width: 100%;
+}
+
+.candidato-nome { 
+    font-weight: 800; 
+    font-size: 0.95rem; 
+    color: var(--brand-dark); 
+    line-height: 1.2;
+}
+
+.candidato-dados { 
+    font-size: 0.75rem; 
+    color: var(--text-muted); 
+    margin-top: 4px; 
+    margin-bottom: 12px;
+    line-height: 1.3;
+}
+
+/* Select unificado ocupando a base do bloco */
+.select-cargo {
+    width: 100%;
+    margin-top: auto; 
+    padding: 8px 4px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    font-weight: bold;
+    font-size: 0.8rem;
+    color: #475569;
+    background: #f1f5f9;
+    cursor: pointer;
+    text-align: center;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.select-cargo:hover {
+    background: #e2e8f0;
+}
+
+/* ==========================================================================
+   🎯 PAINEL DE ABAS (TAB NAVIGATION)
+   ========================================================================== */
+.painel-tabs {
+    display: flex;
+    background: #f1f5f9;
+    border-radius: 50px;
+    padding: 6px;
+    gap: 8px;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.tab-opcao {
+    padding: 10px 25px;
+    border-radius: 50px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.tab-opcao:hover {
+    color: var(--brand-accent);
+}
+
+.tab-opcao.ativa {
+    background: white;
+    color: var(--brand-accent);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+}
+
+/* ==========================================================================
+   🎨 MELHORIAS VISUAIS GERAIS
+   ========================================================================== */
+
+/* Botões com estilo melhorado */
+button:not(.candidato-card button):not(.modal-content button) {
+    transition: all 0.3s ease;
+}
+
+button:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+/* Cards de vaga do contratante */
+.minhas-vagas-card {
+    background: white;
+    border-radius: 12px;
+    border-left: 6px solid;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.minhas-vagas-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+/* Melhorias no modal de candidatos */
+#modal-ver-candidatos .modal-content {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+/* Grid responsivo para candidatos no modal */
+#container-candidatos-detalhes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    #container-candidatos-detalhes {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Cards de candidatos no modal */
+#modal-ver-candidatos .candidato-card {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+#modal-ver-candidatos .candidato-card:hover {
+    border-color: #2563eb;
+    box-shadow: 0 8px 16px rgba(37, 99, 235, 0.15);
+    transform: translateY(-4px);
+}
+
+/* ==========================================================================
+   🔔 ANIMAÇÕES DE NOTIFICAÇÕES
+   ========================================================================== */
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+#container-notificacoes {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 400px;
+}
